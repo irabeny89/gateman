@@ -6,50 +6,132 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// Claims holds the JWT claims data
-type Claims struct {
-	UserID string `json:"user_id"`
-	Role   string `json:"role"`
+// JWTRegisteredClaimsOptions is a struct that holds the options for creating JWT registered claims.
+//
+// Example (Method 1: Using methods)
+//  var opt1 JWTRegisteredClaimsOptions
+//  opt1.WithIssuer("my-app")
+//  opt1.WithSubject("user-id")
+//  opt1.WithAudience([]string{"my-app"})
+//  opt1.WithExpiresAt(24 * time.Hour)
+//  opt1.WithIssuedAt(time.Now())
+//  opt1.WithNotBefore(time.Now())
+//  opt1.WithJTI("1234567890")
+//
+// Example (Method 2: Using struct literal)
+//  opt2 := JWTRegisteredClaimsOptions{
+// 		Issuer: "my-app",
+// 		Subject: "user-id",
+// 		Audience: []string{"my-app"},
+// 		ExpiresAt: 24 * time.Hour,
+// 		IssuedAt: time.Now(),
+// 		NotBefore: time.Now(),
+// 		JTI: "1234567890",
+// 	}
+type JWTRegisteredClaimsOptions struct {
+	Aud       []string
+	ExpiresAt time.Duration
+	IssuedAt  time.Time
+	Issuer    string
+	JTI       string
+	NotBefore time.Time
+	Subject   string
+}
+
+func (r *JWTRegisteredClaimsOptions) WithAudience(aud []string) *JWTRegisteredClaimsOptions {
+	r.Aud = aud
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithExpiresAt(exp time.Duration) *JWTRegisteredClaimsOptions {
+	r.ExpiresAt = exp
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithIssuedAt(iat time.Time) *JWTRegisteredClaimsOptions {
+	r.IssuedAt = iat
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithIssuer(iss string) *JWTRegisteredClaimsOptions {
+	r.Issuer = iss
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithJTI(jti string) *JWTRegisteredClaimsOptions {
+	r.JTI = jti
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithNotBefore(nbf time.Time) *JWTRegisteredClaimsOptions {
+	r.NotBefore = nbf
+	return r
+}
+
+func (r *JWTRegisteredClaimsOptions) WithSubject(sub string) *JWTRegisteredClaimsOptions {
+	r.Subject = sub
+	return r
+}
+
+// NewJWTRegisteredClaims creates a new JWTRegisteredClaims instance with the provided options.
+//
+// Default values:
+//	IssuedAt: time.Now()
+//	NotBefore: time.Now()
+//	ExpiresAt: 24 * time.Hour
+func NewJWTRegisteredClaims(opt JWTRegisteredClaimsOptions) jwt.RegisteredClaims {
+	now := time.Now()
+	if opt.IssuedAt.IsZero() {
+		opt.IssuedAt = now
+	}
+	if opt.NotBefore.IsZero() {
+		opt.NotBefore = now
+	}
+	if opt.ExpiresAt == 0 {
+		opt.ExpiresAt = 24 * time.Hour
+	}
+	return jwt.RegisteredClaims{
+		Audience:  opt.Aud,
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(opt.ExpiresAt)),
+		IssuedAt:  jwt.NewNumericDate(opt.IssuedAt),
+		NotBefore: jwt.NewNumericDate(opt.NotBefore),
+		Issuer:    opt.Issuer,
+		ID:        opt.JTI,
+		Subject:   opt.Subject,
+	}
+}
+
+// JWTClaims is a custom claims type that embeds AuthPayload and jwt.RegisteredClaims.
+// 
+// Use NewJWTRegisteredClaims() to create registered claims.
+type JWTClaims struct {
+	AuthPayload
 	jwt.RegisteredClaims
 }
 
-// Auth handles JWT authentication
-type Auth struct {
-	secret   []byte
-	repo     UserRepository
-	tokenTTL time.Duration
-}
-
-// New creates a new Auth instance
-func New(secret string, repo UserRepository) *Auth {
-	return &Auth{
-		secret:   []byte(secret),
-		repo:     repo,
-		tokenTTL: 24 * time.Hour,
+// NewJWTClaims creates a new JWTClaims instance with the provided payload and registered claims.
+//
+// Use NewJWTRegisteredClaims() to create registered claims.
+func NewJWTClaims(payload AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims {
+	return JWTClaims{
+		AuthPayload: payload,
+		RegisteredClaims: regClaims,
 	}
 }
 
-// GenerateToken generates a JWT token for the given user
-func (a *Auth) GenerateToken(user *User) (string, error) {
-	claims := Claims{
-		UserID: user.ID,
-		Role:   user.Role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(a.tokenTTL)),
-		},
-	}
+func GenerateJWT(secret string, claims JWTClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(a.secret)
+	return token.SignedString([]byte(secret))
 }
 
-func (a *Auth) ParseToken(tokenStr string) (*Claims, error) {
-	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return a.secret, nil
+func ParseJWT(secret string, tokenStr string) (*JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &JWTClaims{}, func(token *jwt.Token) (any, error) {
+		return []byte(secret), nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
 		return claims, nil
 	}
 	return nil, jwt.ErrSignatureInvalid

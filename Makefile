@@ -3,6 +3,10 @@
 # Default target
 all: test
 
+# tidy
+tidy:
+	go mod tidy
+
 # Run all tests
 test:
 	go test -v ./...
