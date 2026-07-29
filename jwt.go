@@ -119,11 +119,67 @@ func NewJWTClaims(payload AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims
 	}
 }
 
+// GenerateJWT creates a new JWT token with the provided claims.
+//
+// Example (Method 1: Using struct literal)
+//  payload := AuthPayload{
+// 		UserID: "1",
+// 		Email:  "[EMAIL_ADDRESS]",
+// 		Roles:  []string{"user"},
+// 	}
+// 	regClaims := NewJWTRegisteredClaims(
+// 		JWTRegisteredClaimsOptions{
+// 			Issuer:    "my-app",
+// 			Subject:   "user-id",
+// 			Audience:  []string{"my-app"},
+// 			ExpiresAt: 24 * time.Hour,
+// 			IssuedAt:  time.Now(),
+// 			NotBefore: time.Now(),
+// 			JTI:       "1234567890",
+// 		},
+// 	)
+// 	claims := NewJWTClaims(payload, regClaims)
+// 	token, err := GenerateJWT(os.Getenv("JWT_SECRET"), claims)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	fmt.Println(token)
+//
+// Example (Method 2: Using methods)
+//  var opt JWTRegisteredClaimsOptions
+//  opt.WithIssuer("my-app").
+// 		WithSubject("user-id").
+// 		WithAudience([]string{"my-app"}).
+// 		WithExpiresAt(24 * time.Hour).
+// 		WithIssuedAt(time.Now()).
+// 		WithNotBefore(time.Now()).
+// 		WithJTI("1234567890")
+// 	claims := NewJWTClaims(
+// 		AuthPayload{
+// 			UserID: "1",
+// 			Email:  "[EMAIL_ADDRESS]",
+// 			Roles:  []string{"user"},
+// 		},
+// 		NewJWTRegisteredClaims(opt),
+// 	)
+// 	token, err := GenerateJWT(os.Getenv("JWT_SECRET"), claims)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	fmt.Println(token)
 func GenerateJWT(secret string, claims JWTClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret))
 }
 
+// ParseJWT parses a JWT token with the provided secret.
+//
+// Example:
+//  claims, err := ParseJWT(os.Getenv("JWT_SECRET"), token)
+//  if err != nil {
+//  	log.Fatal(err)
+//  }
+//  fmt.Println(claims.AuthPayload)
 func ParseJWT(secret string, tokenStr string) (*JWTClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &JWTClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(secret), nil
