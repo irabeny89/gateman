@@ -13,4 +13,3 @@ A package to authenticate and authorize access.
 - [ ] OAuth2 with Google
 - [ ] Rate limiting per user
 - [ ] Revoke tokens with Redis
-- [ ] Encryption
