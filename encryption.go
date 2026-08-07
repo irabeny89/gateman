@@ -40,20 +40,20 @@ func EncryptGCM(plaintext, key []byte) ([]byte, error) {
 	return gcm.Seal(nonce, nonce, plaintext, nil), nil
 }
 
-// DecryptGCM decrypts the ciphertext using AES-GCM.
+// DecryptGCM decrypts the cipherText using AES-GCM.
 //
 // Example:
-//	ciphertext := []byte{...} // encrypted data from EncryptGCM
+//	cipherText := []byte{...} // encrypted data from EncryptGCM
 //	key := []byte("01234567890123456789012345678901")
 //	
-//	decrypted, err := gateman.DecryptGCM(ciphertext, key)
+//	decrypted, err := gateman.DecryptGCM(cipherText, key)
 //	if err != nil {
 //		// handle error (e.g., wrong key, corrupted data)
 //	}
 //	
 //	fmt.Println("Decrypted:", string(decrypted))
 //
-func DecryptGCM(ciphertext, key []byte) ([]byte, error) {
+func DecryptGCM(cipherText, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -65,10 +65,10 @@ func DecryptGCM(ciphertext, key []byte) ([]byte, error) {
 	}
 
 	nonceSize := gcm.NonceSize()
-	if len(ciphertext) < nonceSize {
-		return nil, fmt.Errorf("ciphertext too short")
+	if len(cipherText) < nonceSize {
+		return nil, fmt.Errorf("cipher text too short")
 	}
 
-	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
-	return gcm.Open(nil, nonce, ciphertext, nil)
+	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
+	return gcm.Open(nil, nonce, cipherText, nil)
 }
