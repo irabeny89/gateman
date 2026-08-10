@@ -79,6 +79,7 @@ func Ratelimit(db *SQLite, max int, period time.Duration, next http.Handler) htt
 			_, err := db.Exec(`
 				INSERT INTO rate_limits (ip, uri, count, end_at) 
 				VALUES (?, ?, ?, ?)
+				ON CONFLICT(ip, uri) DO UPDATE SET count = 1, end_at = excluded.end_at
 			`, IP, r.RequestURI, 1, time.Now().Add(period))
 			return err
 		}
@@ -109,26 +110,33 @@ func Ratelimit(db *SQLite, max int, period time.Duration, next http.Handler) htt
 		defer rows.Close()
 		if rows.Next() { //* found
 			rows.Scan(&URI, &count, &end_at)
-			// when sleep period ends, restart
-			if count >= max && time.Now().Add(period).After(end_at) {
-				if err := restart(IP); err != nil {
-					handleErr(err)
+			rows.Close()
+			if count >= max {
+				if time.Now().After(end_at) {
+					if err := restart(IP); err != nil {
+						handleErr(err)
+						return
+					}
+					next.ServeHTTP(w, r)
 					return
 				}
-			} else { // increment count and store
-				_, err := db.Exec(`
+				http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
+				return
+			}
+
+			_, err := db.Exec(`
 				UPDATE rate_limits
 				SET count = count + 1
 				WHERE ip = ?
 				AND uri = ?
-				`, IP, r.RequestURI)
-				if err != nil {
-					handleErr(err)
-					return
-				}
+			`, IP, r.RequestURI)
+			if err != nil {
+				handleErr(err)
+				return
 			}
 			next.ServeHTTP(w, r)
 		} else { // if IP not seen before, add it to the rate limit table
+			rows.Close()
 			if err := restart(IP); err != nil {
 				handleErr(err)
 				return
