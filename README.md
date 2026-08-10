@@ -10,6 +10,4 @@ A package to authenticate and authorize access.
 
 ## Todo
 
-- [ ] OAuth2 with Google
-- [ ] Rate limiting per user
-- [ ] Revoke tokens with Redis
+- [x] Rate limiting per user
