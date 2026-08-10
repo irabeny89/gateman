@@ -6,8 +6,6 @@ A package to authenticate and authorize access.
 
 - Password hashing and verification using Argon.
 - JWT token generation(with custom and registered claims) and parsing.
-- HTTP middlewares for auth
+- HTTP middlewares for auth, rate limiting and middleware composability
 
 ## Todo
-
-- [x] Rate limiting per user
