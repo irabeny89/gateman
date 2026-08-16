@@ -1,25 +1,67 @@
 from_latest_tag = false
-ignore_merge_commits = false
+ignore_merge_commits = true
 ignore_fixup_commits = false
 disable_changelog = false
 disable_bump_commit = false
 generate_mono_repository_global_tag = true
 generate_mono_repository_package_tags = true
-branch_whitelist = []
-pre = "alpha.*"
+# pre = "alpha.*"
 skip_ci = "[skip ci]"
+tag_prefix = "v"
 skip_untracked = false
-pre_bump_hooks = []
-post_bump_hooks = []
 pre_package_bump_hooks = []
 post_package_bump_hooks = []
 
-[git_hooks]
+branch_whitelist = [
+  "main" # allow bump on main
+]
+# Automation Hooks executed during 'cog bump'
+pre_bump_hooks = [
+    "go mod tidy",    # Safeguards go.mod and go.sum sanitization before release
+    "go test -race -cover ./...", # Ensures all unit tests pass prior to a new version bump
+]
 
-[commit_types]
+post_bump_hooks = [
+    "git push origin main",        # Automatically pushes the newly minted version commit to main
+    "git push origin {{version_tag}}" # Automatically publishes the Go proxy-compatible version tag
+]
 
+# Git Hooks configuration used by 'cog install-hook'
+# Embedded git-hooks script
+[git_hooks.commit-msg]
+script = """#!/bin/sh
+set -e
+cog verify --file $1
+"""
+[git_hooks.pre-commit]
+script = """#!/bin/sh
+set -e
+cog check
+go fmt
+"""
+
+# Changelog Generation Settings
 [changelog]
+authors = [
+  { signature = "Ernest Irabor", username = "Irabeny" }
+]
 path = "CHANGELOG.md"
-authors = []
+template = "remote"
+remote = "github.com"
+repository = "gateman"
+owner = "Irabeny89"
+
+# Commit Types Mapping for Changelog Sections
+[commit_types]
+feat = { changelog_title = "🚀 Features" }
+fix = { changelog_title = "🐛 Bug Fixes" }
+perf = { changelog_title = "⚡ Performance Improvements" }
+refactor = { changelog_title = "♻️ Code Refactoring" }
+docs = { changelog_title = "📝 Documentation" }
+style = { changelog_title = "🎨 Style & Formatting" }
+test = { changelog_title = "🧪 Testing" }
+chore = { changelog_title = "🔧 Maintenance" }
+ci = { changelog_title = "👷 Continuous Integration" }
+build = { changelog_title = "📦 Build System" }
 
 [bump_profiles]

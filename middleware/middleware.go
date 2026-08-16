@@ -1,4 +1,4 @@
-package gateman
+package middleware
 
 import (
 	"context"
@@ -8,6 +8,9 @@ import (
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/irabeny89/gateman"
+	"github.com/irabeny89/gateman/jwt"
 )
 
 type ctxKey string
@@ -35,7 +38,7 @@ func RequireAuthWithJWT(secret string, roles []string, next http.Handler) http.H
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")
 		token := strings.TrimPrefix(auth, "Bearer ")
-		claims, err := ParseJWT(secret, token)
+		claims, err := jwt.ParseJWT(secret, token)
 		checkRoles := func(allowList, userRoles []string) bool {
 			for _, allow := range allowList {
 				if slices.Contains(userRoles, allow) {
@@ -73,7 +76,7 @@ func RequireAuthWithJWT(secret string, roles []string, next http.Handler) http.H
 //			fmt.Println("Handler only runs when not rate limited")
 //		}),
 //	)
-func Ratelimit(db *SQLite, max int, period time.Duration, next http.Handler) http.Handler {
+func Ratelimit(db *gateman.SQLite, max int, period time.Duration, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		restart := func(IP string) error {
 			_, err := db.Exec(`

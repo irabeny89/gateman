@@ -1,4 +1,4 @@
-package gateman
+package middleware
 
 import (
 	"database/sql"
@@ -8,10 +8,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/irabeny89/gateman"
+	"github.com/irabeny89/gateman/jwt"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func setupTestDB(t *testing.T) (*SQLite, func()) {
+func setupTestDB(t *testing.T) (*gateman.SQLite, func()) {
 	t.Helper()
 	f, err := os.CreateTemp("", "gateman_test_*.db")
 	if err != nil {
@@ -41,7 +43,7 @@ func setupTestDB(t *testing.T) (*SQLite, func()) {
 		t.Fatalf("failed to create rate_limits table: %v", err)
 	}
 
-	return &SQLite{DB: db}, func() {
+	return &gateman.SQLite{DB: db}, func() {
 		db.Close()
 		os.Remove(dbPath)
 	}
@@ -50,25 +52,25 @@ func setupTestDB(t *testing.T) (*SQLite, func()) {
 func TestRequireAuthWithJWT(t *testing.T) {
 	secret := "super-secret-key"
 
-	validPayload := AuthPayload{
+	validPayload := gateman.AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},
 	}
 
-	regClaims := NewJWTRegisteredClaims(JWTRegisteredClaimsOptions{
+	regClaims := jwt.NewJWTRegisteredClaims(jwt.JWTRegisteredClaimsOptions{
 		ExpiresAt: 1 * time.Hour,
 	})
 
-	validToken, err := GenerateJWT(secret, NewJWTClaims(validPayload, regClaims))
+	validToken, err := jwt.GenerateJWT(secret, jwt.NewJWTClaims(validPayload, regClaims))
 	if err != nil {
 		t.Fatalf("failed to generate valid JWT: %v", err)
 	}
 
-	expiredClaims := NewJWTRegisteredClaims(JWTRegisteredClaimsOptions{
+	expiredClaims := jwt.NewJWTRegisteredClaims(jwt.JWTRegisteredClaimsOptions{
 		ExpiresAt: -1 * time.Hour,
 	})
-	expiredToken, err := GenerateJWT(secret, NewJWTClaims(validPayload, expiredClaims))
+	expiredToken, err := jwt.GenerateJWT(secret, jwt.NewJWTClaims(validPayload, expiredClaims))
 	if err != nil {
 		t.Fatalf("failed to generate expired JWT: %v", err)
 	}
@@ -136,10 +138,10 @@ func TestRequireAuthWithJWT(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var contextPayload AuthPayload
+			var contextPayload gateman.AuthPayload
 			nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				if val := r.Context().Value(authPayloadKey); val != nil {
-					if payload, ok := val.(AuthPayload); ok {
+					if payload, ok := val.(gateman.AuthPayload); ok {
 						contextPayload = payload
 					}
 				}

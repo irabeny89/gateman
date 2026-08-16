@@ -1,4 +1,4 @@
-package gateman
+package encryption
 
 import (
 	"testing"
