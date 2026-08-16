@@ -21,8 +21,8 @@ import (
 //	
 //	fmt.Println("Encrypted:", encrypted)
 //
-func EncryptGCM(plaintext, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
+func EncryptGCM(plaintext, key string) ([]byte, error) {
+	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func EncryptGCM(plaintext, key []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	return gcm.Seal(nonce, nonce, plaintext, nil), nil
+	return gcm.Seal(nonce, nonce, []byte(plaintext), nil), nil
 }
 
 // DecryptGCM decrypts the cipherText using AES-GCM.
@@ -53,8 +53,8 @@ func EncryptGCM(plaintext, key []byte) ([]byte, error) {
 //	
 //	fmt.Println("Decrypted:", string(decrypted))
 //
-func DecryptGCM(cipherText, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
+func DecryptGCM(cipherText, key string) ([]byte, error) {
+	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return nil, err
 	}
@@ -70,5 +70,5 @@ func DecryptGCM(cipherText, key []byte) ([]byte, error) {
 	}
 
 	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
-	return gcm.Open(nil, nonce, cipherText, nil)
+	return gcm.Open(nil, []byte(nonce), []byte(cipherText), nil)
 }
