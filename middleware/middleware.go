@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"log"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/irabeny89/gateman"
 	"github.com/irabeny89/gateman/jwt"
 )
 
@@ -76,7 +76,7 @@ func RequireAuthWithJWT(secret string, roles []string, next http.Handler) http.H
 //			fmt.Println("Handler only runs when not rate limited")
 //		}),
 //	)
-func Ratelimit(db *gateman.SQLite, max int, period time.Duration, next http.Handler) http.Handler {
+func Ratelimit(db *sql.DB, max int, period time.Duration, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		restart := func(IP string) error {
 			_, err := db.Exec(`

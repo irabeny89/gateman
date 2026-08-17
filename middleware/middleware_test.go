@@ -13,7 +13,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func setupTestDB(t *testing.T) (*gateman.SQLite, func()) {
+func setupTestDB(t *testing.T) (*sql.DB, func()) {
 	t.Helper()
 	f, err := os.CreateTemp("", "gateman_test_*.db")
 	if err != nil {
@@ -43,7 +43,7 @@ func setupTestDB(t *testing.T) (*gateman.SQLite, func()) {
 		t.Fatalf("failed to create rate_limits table: %v", err)
 	}
 
-	return &gateman.SQLite{DB: db}, func() {
+	return db, func() {
 		db.Close()
 		os.Remove(dbPath)
 	}
