@@ -5,44 +5,57 @@ import (
 )
 
 func TestEncryptGCM(t *testing.T) {
-	plaintext := "Hello, World!"
-	key := "01234567890123456789012345678901"
-	encrypted, err := EncryptGCM(plaintext, key)
-	if err != nil {
-		t.Fatalf("Encrypt error: %v", err)
+	cases := []struct {
+		name, plain, key string
+		sameOut, hasError bool
+	} {
+		{
+			name: "should error on key < 32 bits",
+			plain: "plain text",
+			key: "01234567890",
+			sameOut: false,
+			hasError: true,
+		},
+		{
+			name: "encrypt plain text",
+			plain: "plain text",
+			key: "01234567890123456789012345678901",
+			sameOut: false,
+			hasError: false,
+		},
 	}
-	if encrypted == nil {
-		t.Fatalf("Encrypted bytes return nil")
-	}
-	if string(encrypted) == plaintext {
-		t.Fatalf("Encrypt returned the same string as input")
-	}
-	if string(encrypted) == "Hello, World!" {
-		t.Fatalf("Encrypt returned the same string as input")
-	}
-	if string(encrypted) == "" {
-		t.Fatalf("Encrypt returned the same string as input")
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			enc, err := EncryptGCM(tc.plain, tc.key)
+			if tc.hasError && err == nil {
+				t.Fatal("should have error")
+			}
+			if !tc.sameOut && string(enc) == tc.plain {
+				t.Fatal("should not return plaintext")
+			}
+		})
 	}
 }
 
 func TestDecryptGCM(t *testing.T) {
-	plaintext := "Hello, World!"
-	key := "01234567890123456789012345678901"
-	encrypted, err := EncryptGCM(plaintext, key)
-	if err != nil {
-		t.Fatalf("Encrypt error: %v", err)
+	getCypher := func(t *testing.T, plainText, key string) string {
+		enc, err := EncryptGCM(plainText, key)
+		if err != nil {
+			t.Fatal("Failed to encrypt plain text")
+		}
+		return string(enc)
 	}
-	if encrypted == nil {
-		t.Fatalf("Encrypted bytes return nil")
+	keys := []string{"01234567890123456789012345678901", "012345678901234567890123456789999"}
+	plainText := "plain text"
+	cypher := getCypher(t, plainText, keys[0])
+	// should decipher using same key
+	dec, err := DecryptGCM(cypher, keys[0])
+	if string(dec) != plainText {
+		t.Fatal("deciphered text not matched")
 	}
-	decrypted, err := DecryptGCM(string(encrypted), key)
-	if err != nil {
-		t.Fatalf("Decrypt error: %v", err)
-	}
-	if decrypted == nil {
-		t.Fatalf("Decrypted bytes return nil")
-	}
-	if string(decrypted) != plaintext {
-		t.Fatalf("Decrypt returned the wrong string")
+	// should not decipher using different key
+	dec, err = DecryptGCM(cypher, keys[1])
+	if err == nil {
+		t.Fatal("should error on differing keys")
 	}
 }

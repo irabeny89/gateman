@@ -11,6 +11,10 @@ func TestHashPass(t *testing.T) {
 	if hash == pass {
 		t.Errorf("password should be different after hashing, got %v", hash)
 	}
+	tt := []struct{
+		want string
+		pass string
+	}
 }
 
 func TestCheckPassword(t *testing.T) {

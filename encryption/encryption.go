@@ -1,3 +1,4 @@
+// Handle encryption and decryption.
 package encryption
 
 import (
@@ -8,19 +9,7 @@ import (
 	"io"
 )
 
-// EncryptGCM encrypts the plaintext using AES-GCM.
-//
-// Example:
-//	plaintext := []byte("secret message")
-//	key := []byte("01234567890123456789012345678901") // 32 bytes for AES-256
-//	
-//	encrypted, err := gateman.EncryptGCM(plaintext, key)
-//	if err != nil {
-//		// handle error
-//	}
-//	
-//	fmt.Println("Encrypted:", encrypted)
-//
+// EncryptGCM encrypts the plaintext with key using AES-GCM.
 func EncryptGCM(plaintext, key string) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
@@ -40,19 +29,7 @@ func EncryptGCM(plaintext, key string) ([]byte, error) {
 	return gcm.Seal(nonce, nonce, []byte(plaintext), nil), nil
 }
 
-// DecryptGCM decrypts the cipherText using AES-GCM.
-//
-// Example:
-//	cipherText := []byte{...} // encrypted data from EncryptGCM
-//	key := []byte("01234567890123456789012345678901")
-//	
-//	decrypted, err := gateman.DecryptGCM(cipherText, key)
-//	if err != nil {
-//		// handle error (e.g., wrong key, corrupted data)
-//	}
-//	
-//	fmt.Println("Decrypted:", string(decrypted))
-//
+// DecryptGCM decrypts the cipherText with key using AES-GCM.
 func DecryptGCM(cipherText, key string) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
