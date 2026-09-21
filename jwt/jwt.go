@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/irabeny89/gateman"
 )
 
 // JWTRegisteredClaimsOptions is a struct that holds the options for creating JWT registered claims.
@@ -40,7 +39,11 @@ type JWTRegisteredClaimsOptions struct {
 	NotBefore time.Time
 	Subject   string
 }
-
+type AuthPayload struct {
+	UserID string   `json:"user_id"`
+	Email  string   `json:"email"`
+	Roles  []string `json:"roles"`
+}
 func (r *JWTRegisteredClaimsOptions) WithAudience(aud []string) *JWTRegisteredClaimsOptions {
 	r.Aud = aud
 	return r
@@ -109,14 +112,14 @@ func NewJWTRegisteredClaims(opt JWTRegisteredClaimsOptions) jwt.RegisteredClaims
 //
 // Use NewJWTRegisteredClaims() to create registered claims.
 type JWTClaims struct {
-	gateman.AuthPayload
+	AuthPayload
 	jwt.RegisteredClaims
 }
 
 // NewJWTClaims creates a new JWTClaims instance with the provided payload and registered claims.
 //
 // Use NewJWTRegisteredClaims() to create registered claims.
-func NewJWTClaims(payload gateman.AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims {
+func NewJWTClaims(payload AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims {
 	return JWTClaims{
 		AuthPayload:      payload,
 		RegisteredClaims: regClaims,
@@ -127,7 +130,7 @@ func NewJWTClaims(payload gateman.AuthPayload, regClaims jwt.RegisteredClaims) J
 //
 // Example (Method 1: Using struct literal)
 //
-//	 payload := gateman.AuthPayload{
+//	 payload := AuthPayload{
 //			UserID: "1",
 //			Email:  "[EMAIL_ADDRESS]",
 //			Roles:  []string{"user"},

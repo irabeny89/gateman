@@ -6,11 +6,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/irabeny89/gateman"
 )
 
 func TestNewJWTClaims(t *testing.T) {
-	payload := gateman.AuthPayload{
+	payload := AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},
@@ -28,7 +27,7 @@ func TestNewJWTClaims(t *testing.T) {
 }
 
 func TestGenerateJWT(t *testing.T) {
-	payload := gateman.AuthPayload{
+	payload := AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},
@@ -47,7 +46,7 @@ func TestGenerateJWT(t *testing.T) {
 }
 
 func TestParseJWT(t *testing.T) {
-	payload := gateman.AuthPayload{
+	payload := AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},

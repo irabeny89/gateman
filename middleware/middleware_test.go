@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/irabeny89/gateman"
 	"github.com/irabeny89/gateman/jwt"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -52,7 +51,7 @@ func setupTestDB(t *testing.T) (*sql.DB, func()) {
 func TestRequireAuthWithJWT(t *testing.T) {
 	secret := "super-secret-key"
 
-	validPayload := gateman.AuthPayload{
+	validPayload := jwt.AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},
@@ -138,10 +137,10 @@ func TestRequireAuthWithJWT(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var contextPayload gateman.AuthPayload
+			var contextPayload jwt.AuthPayload
 			nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				if val := r.Context().Value(authPayloadKey); val != nil {
-					if payload, ok := val.(gateman.AuthPayload); ok {
+					if payload, ok := val.(jwt.AuthPayload); ok {
 						contextPayload = payload
 					}
 				}
