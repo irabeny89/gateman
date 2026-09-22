@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.1](https://github.com/Irabeny89/gateman/compare/7617587f6b8e4508513ebbcf5a5f9655d32df3f4..v0.1.1) - 2026-09-22
+#### 🐛 Bug Fixes
+- refactor middleware package and add Makefile - ([7617587](https://github.com/Irabeny89/gateman/commit/7617587f6b8e4508513ebbcf5a5f9655d32df3f4)) - Irabeny
+
+- - -
+
 ## [v0.1.0](https://github.com/Irabeny89/gateman/compare/820a33e06970ad57efb01a5d636cc19c96669994..v0.1.0) - 2026-09-21
 #### 🚀 Features
 - implement SQLite-backed rate limiting middleware and add foundational error handling - ([1c42141](https://github.com/Irabeny89/gateman/commit/1c42141f4dc0653e67251930ff315de2128b1e6a)) - Irabeny
