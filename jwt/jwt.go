@@ -44,6 +44,7 @@ type AuthPayload struct {
 	Email  string   `json:"email"`
 	Roles  []string `json:"roles"`
 }
+
 func (r *JWTRegisteredClaimsOptions) WithAudience(aud []string) *JWTRegisteredClaimsOptions {
 	r.Aud = aud
 	return r
