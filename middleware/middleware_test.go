@@ -20,20 +20,26 @@ func TestRequireAuthWithJWT(t *testing.T) {
 		Email:  "test@example.com",
 		Roles:  []string{"admin", "user"},
 	}
-
 	regClaims := jwt.NewJWTRegisteredClaims(jwt.JWTRegisteredClaimsOptions{
 		ExpiresAt: 1 * time.Hour,
 	})
-
-	validToken, err := jwt.GenerateJWT(secret, jwt.NewJWTClaims(validPayload, regClaims))
+	claims := jwt.JWTClaims{
+		AuthPayload:      validPayload,
+		RegisteredClaims: regClaims,
+	}
+	validToken, err := claims.GenerateToken(secret)
 	if err != nil {
 		t.Fatalf("failed to generate valid JWT: %v", err)
 	}
 
-	expiredClaims := jwt.NewJWTRegisteredClaims(jwt.JWTRegisteredClaimsOptions{
+	expiredRegClaims := jwt.NewJWTRegisteredClaims(jwt.JWTRegisteredClaimsOptions{
 		ExpiresAt: -1 * time.Hour,
 	})
-	expiredToken, err := jwt.GenerateJWT(secret, jwt.NewJWTClaims(validPayload, expiredClaims))
+	expClaims := jwt.JWTClaims{
+		AuthPayload:      validPayload,
+		RegisteredClaims: expiredRegClaims,
+	}
+	expiredToken, err := expClaims.GenerateToken(secret)
 	if err != nil {
 		t.Fatalf("failed to generate expired JWT: %v", err)
 	}

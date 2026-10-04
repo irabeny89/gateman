@@ -117,16 +117,6 @@ type JWTClaims struct {
 	jwt.RegisteredClaims
 }
 
-// NewJWTClaims creates a new JWTClaims instance with the provided payload and registered claims.
-//
-// Use NewJWTRegisteredClaims() to create registered claims.
-func NewJWTClaims(payload AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims {
-	return JWTClaims{
-		AuthPayload:      payload,
-		RegisteredClaims: regClaims,
-	}
-}
-
 // GenerateJWT creates a new JWT token with the provided claims.
 //
 // Example (Method 1: Using struct literal)
@@ -177,7 +167,7 @@ func NewJWTClaims(payload AuthPayload, regClaims jwt.RegisteredClaims) JWTClaims
 //			log.Fatal(err)
 //		}
 //		fmt.Println(token)
-func GenerateJWT(secret string, claims JWTClaims) (string, error) {
+func (claims JWTClaims) GenerateToken(secret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret))
 }

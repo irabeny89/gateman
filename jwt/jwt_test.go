@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func TestNewJWTClaims(t *testing.T) {
+func TestGenerateToken(t *testing.T) {
 	payload := AuthPayload{
 		UserID: "user-123",
 		Email:  "test@example.com",
@@ -17,26 +17,11 @@ func TestNewJWTClaims(t *testing.T) {
 	regClaims := NewJWTRegisteredClaims(JWTRegisteredClaimsOptions{
 		ExpiresAt: 1 * time.Hour,
 	})
-	claims := NewJWTClaims(payload, regClaims)
-	if !reflect.DeepEqual(claims.AuthPayload, payload) {
-		t.Fatalf("expected AuthPayload %v, got %v", payload, claims.AuthPayload)
+	claims := JWTClaims{
+		AuthPayload:      payload,
+		RegisteredClaims: regClaims,
 	}
-	if !reflect.DeepEqual(claims.RegisteredClaims, regClaims) {
-		t.Fatalf("expected RegisteredClaims %v, got %v", regClaims, claims.RegisteredClaims)
-	}
-}
-
-func TestGenerateJWT(t *testing.T) {
-	payload := AuthPayload{
-		UserID: "user-123",
-		Email:  "test@example.com",
-		Roles:  []string{"admin", "user"},
-	}
-	regClaims := NewJWTRegisteredClaims(JWTRegisteredClaimsOptions{
-		ExpiresAt: 1 * time.Hour,
-	})
-	claims := NewJWTClaims(payload, regClaims)
-	token, err := GenerateJWT("secret", claims)
+	token, err := claims.GenerateToken("secret")
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
@@ -54,8 +39,11 @@ func TestParseJWT(t *testing.T) {
 	regClaims := NewJWTRegisteredClaims(JWTRegisteredClaimsOptions{
 		ExpiresAt: 1 * time.Hour,
 	})
-	claims := NewJWTClaims(payload, regClaims)
-	token, err := GenerateJWT("secret", claims)
+	claims := JWTClaims{
+		AuthPayload:      payload,
+		RegisteredClaims: regClaims,
+	}
+	token, err := claims.GenerateToken("secret")
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
