@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.0.0](https://github.com/Irabeny89/gateman/compare/a472d4ccef80c4a5737ee51a340a58c76b8e061a..v1.0.0) - 2026-10-04
+#### 👷 Continuous Integration
+- add github release workflow - ([a472d4c](https://github.com/Irabeny89/gateman/commit/a472d4ccef80c4a5737ee51a340a58c76b8e061a)) - Irabeny
+#### ♻️ Code Refactoring
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) rename GenerateJWT to GenerateToken and replace NewJWTClaims function with a method on JWTClaims - ([85f9bed](https://github.com/Irabeny89/gateman/commit/85f9bedb60fcfbf50a6c8e8f2976ae698f932d10)) - Irabeny
+
+- - -
+
 ## [v0.1.1](https://github.com/Irabeny89/gateman/compare/7617587f6b8e4508513ebbcf5a5f9655d32df3f4..v0.1.1) - 2026-09-22
 #### 🐛 Bug Fixes
 - refactor middleware package and add Makefile - ([7617587](https://github.com/Irabeny89/gateman/commit/7617587f6b8e4508513ebbcf5a5f9655d32df3f4)) - Irabeny
