@@ -1,4 +1,4 @@
-package middleware_test
+package middleware
 
 import (
 	"log/slog"
@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/irabeny89/gateman/helper"
-	"github.com/irabeny89/gateman/middleware"
 )
 
 func TestLogRequest(t *testing.T) {
@@ -39,7 +38,7 @@ func TestLogRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			handler := middleware.LogRequest(tt.logger, tt.next)
+			handler := LogRequest(tt.logger, tt.next)
 			rr := httptest.NewRecorder()
 			r := httptest.NewRequest("GET", "/", nil)
 			handler.ServeHTTP(rr, r)
