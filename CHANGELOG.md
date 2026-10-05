@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.1.0](https://github.com/Irabeny89/gateman/compare/b91e3f760c45a2c0608fb3fa80ac34793e850ed9..v1.1.0) - 2026-10-05
+#### 🚀 Features
+- add http logger middleware - ([c7b5f60](https://github.com/Irabeny89/gateman/commit/c7b5f6028e48cfffeb8215a5708ac7a615449029)) - Irabeny
+- add text and json logger helper functions - ([b91e3f7](https://github.com/Irabeny89/gateman/commit/b91e3f760c45a2c0608fb3fa80ac34793e850ed9)) - Irabeny
+
+- - -
+
 ## [v1.0.0](https://github.com/Irabeny89/gateman/compare/a472d4ccef80c4a5737ee51a340a58c76b8e061a..v1.0.0) - 2026-10-04
 #### 👷 Continuous Integration
 - add github release workflow - ([a472d4c](https://github.com/Irabeny89/gateman/commit/a472d4ccef80c4a5737ee51a340a58c76b8e061a)) - Irabeny
