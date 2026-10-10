@@ -10,7 +10,7 @@ import (
 	"math/rand"
 	"net/http"
 
-	errs "github.com/irabeny89/gateman/error"
+	errs "github.com/irabeny89/gateman/v2/error"
 )
 
 // ContextValue is a generic helper to extract a value from the context.

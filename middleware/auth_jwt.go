@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/irabeny89/gateman/jwt"
+	"github.com/irabeny89/gateman/v2/jwt"
 )
 
 const AuthJWTCtxKey = "authJWTPayload"

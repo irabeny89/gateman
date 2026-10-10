@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/irabeny89/gateman/jwt"
+	"github.com/irabeny89/gateman/v2/jwt"
 	_ "github.com/mattn/go-sqlite3"
 )
 

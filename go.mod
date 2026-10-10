@@ -1,4 +1,4 @@
-module github.com/irabeny89/gateman
+module github.com/irabeny89/gateman/v2
 
 go 1.26.2
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/irabeny89/gateman/logger"
+	"github.com/irabeny89/gateman/v2/logger"
 )
 
 func TestLogRequest(t *testing.T) {
