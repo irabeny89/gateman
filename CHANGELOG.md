@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.0](https://github.com/Irabeny89/gateman/compare/fbbe6b6522b1a94a99abe8a78bccb2d92639a11f..v2.0.0) - 2026-10-10
+#### 🚀 Features
+- add generic helper functions for context retrieval, JSON handling, and OTP generation - ([dd06dd0](https://github.com/Irabeny89/gateman/commit/dd06dd0c21c9d60086776f7e599d09332ef5702f)) - Irabeny
+- ![BREAKING](https://img.shields.io/badge/BREAKING-red) add server with strict secure setting, refactor logger - ([d258db6](https://github.com/Irabeny89/gateman/commit/d258db64b1a7904457941a69c97129d6b455b2a4)) - Irabeny
+#### 🐛 Bug Fixes
+- upgrade module to version 2 with path updates across dependencies - ([bfbe7f9](https://github.com/Irabeny89/gateman/commit/bfbe7f915d287bd9b98d7ce09e097d14bbbd0f25)) - Irabeny
+#### ♻️ Code Refactoring
+- test auth middleware and refactor test organization - ([fbbe6b6](https://github.com/Irabeny89/gateman/commit/fbbe6b6522b1a94a99abe8a78bccb2d92639a11f)) - Irabeny
+#### 🔧 Maintenance
+- add ErrNotJSON and ErrBodyTooLarge errors - ([3bb71ac](https://github.com/Irabeny89/gateman/commit/3bb71ac19dd76353d4e887e7ed3e2dbf7f05af87)) - Irabeny
+
+- - -
+
 ## [v1.1.0](https://github.com/Irabeny89/gateman/compare/b91e3f760c45a2c0608fb3fa80ac34793e850ed9..v1.1.0) - 2026-10-05
 #### 🚀 Features
 - add http logger middleware - ([c7b5f60](https://github.com/Irabeny89/gateman/commit/c7b5f6028e48cfffeb8215a5708ac7a615449029)) - Irabeny
