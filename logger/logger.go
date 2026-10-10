@@ -1,12 +1,12 @@
-package helper
+package logger
 
 import (
 	"log/slog"
 	"os"
 )
 
-// NewTextLogger returns a text logger than can write to file if filePath is provided or just log to stdout otherwise.
-func NewTextLogger(filePath string) (*slog.Logger, error) {
+// TextLogger returns a text logger than can write to file if filePath is provided or just log to stdout otherwise.
+func TextLogger(filePath string) (*slog.Logger, error) {
 	if filePath == "" {
 		return slog.New(slog.NewTextHandler(os.Stdout, nil)), nil
 	}
@@ -16,8 +16,8 @@ func NewTextLogger(filePath string) (*slog.Logger, error) {
 	}
 	return slog.New(slog.NewTextHandler(f, nil)), nil
 }
-// NewJSONLogger returns a JSON logger than can write to file if filePath is provided or just log to stdout otherwise.
-func NewJSONLogger(filePath string) (*slog.Logger, error) {
+// JSONLogger returns a JSON logger than can write to file if filePath is provided or just log to stdout otherwise.
+func JSONLogger(filePath string) (*slog.Logger, error) {
 	if filePath == "" {
 		return slog.New(slog.NewJSONHandler(os.Stdout, nil)), nil
 	}

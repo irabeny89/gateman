@@ -9,13 +9,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/irabeny89/gateman/helper"
+	"github.com/irabeny89/gateman/logger"
 )
 
 func TestLogRequest(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "log.txt")
-	logger, err := helper.NewTextLogger(path)
+	logger, err := logger.TextLogger(path)
 	if err != nil {
 		t.Fatal(err)
 	}

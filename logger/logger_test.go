@@ -1,13 +1,11 @@
-package helper_test
+package logger
 
 import (
 	"path/filepath"
 	"testing"
-
-	"github.com/irabeny89/gateman/helper"
 )
 
-func TestNewTextLogger(t *testing.T) {
+func TestTextLogger(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "logs.txt")
 	tests := []struct {
@@ -35,14 +33,14 @@ func TestNewTextLogger(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if _, err := helper.NewTextLogger(tt.filePath); err != nil != tt.wantErr {
+			if _, err := TextLogger(tt.filePath); err != nil != tt.wantErr {
 				t.Fatalf("failed to get logger: %v", err)
 			}
 		})
 	}
 }
 
-func TestNewJSONLogger(t *testing.T) {
+func TestJSONLogger(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "logs.txt")
 	tests := []struct {
@@ -70,7 +68,7 @@ func TestNewJSONLogger(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if _, err := helper.NewTextLogger(tt.filePath); err != nil != tt.wantErr {
+			if _, err := TextLogger(tt.filePath); err != nil != tt.wantErr {
 				t.Fatalf("failed to get logger: %v", err)
 			}
 		})
